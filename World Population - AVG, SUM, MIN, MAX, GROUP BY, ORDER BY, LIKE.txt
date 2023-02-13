@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/eddie/Downloads/Codecademy/sql-population-queries-starting/sql-population-queries-starting/db.sqlite" readonly="0" foreign_keys="" case_sensitive_like="" temp_store="" wal_autocheckpoint="" synchronous=""/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="373"/><column_width id="1" width="0"/><column_width id="2" width="200"/><column_width id="3" width="1232"/><column_width id="4" width="0"/></tab_structure><tab_browse><current_table name="0,0:"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">--QUERIES 1-5 REPRESENT EXPLORATORY DATA ANALYSIS USING SQL
+--Query 1 to understand the data better
+--SELECT * FROM population_years
+--ORDER BY country ASC;
+
+--Query 2 to see how many years the data covers (2000-2010)
+--SELECT DISTINCT year FROM population_years;
+
+--Query 3 to see how many countries the data covers
+--SELECT DISTINCT country FROM population_years;
+
+--Query 4 to see any NULL values throughout the dataset
+--SELECT * FROM population_years
+--WHERE year IS NULL OR
+--	  population IS NULL OR
+--	  country IS NULL;
+
+--Query 5 to see any low values, to check data validity
+--SELECT country, MIN(population), year
+--FROM population_years;
+
+--Query 6 to see any high values, to check data validity
+--SELECT country, MAX(population), year
+--FROM population_years;
+
+--Query 7 to see the 10 highest population countries in 2010
+--SELECT country, population FROM population_years
+--WHERE year = '2010'
+--ORDER BY population DESC
+--LIMIT 10;
+
+--Query 8 to see highest population for Russia in the dataset
+--SELECT population, year FROM population_years
+--WHERE country = 'Russia'
+--ORDER BY population DESC;
+
+--Query 9 to find population growth amongst countries beginning countaining the word 'islands'
+--SELECT year, SUM(population) 
+--FROM population_years
+--WHERE country LIKE '%islands%'
+--GROUP BY year;
+
+--Query 10 to find countries with populations over 100 million in 2010
+--SELECT DISTINCT country, population FROM population_years
+--WHERE population &gt; 100 AND year = '2010'
+--ORDER BY population DESC;
+
+--Query 11 to see average population of countries by year
+--SELECT year, ROUND(AVG(population), 2) AS 'Average Pop'
+--FROM population_years
+--GROUP BY year;
+
+
+	  </sql><current_tab id="0"/></tab_sql></sqlb_project>

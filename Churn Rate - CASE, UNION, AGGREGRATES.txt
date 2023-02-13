@@ -1,0 +1,45 @@
+--Data taken from https://www.kaggle.com/datasets/naiborhujosua/energy-industry
+
+--Query using data from ml_case_training_data table to find monthly churn for 3 months in 2014.
+WITH months AS
+(SELECT
+  '2014/01/01' as first_day,
+  '2014/01/31' as last_day
+UNION
+SELECT
+  '2014/02/01' as first_day,
+  '2014/02/28' as last_day
+UNION
+SELECT
+  '2014/03/01' as first_day,
+  '2014/03/31' as last_day),
+cross_join AS
+(SELECT *
+FROM subscriptions
+CROSS JOIN months),
+status AS
+(SELECT id, first_day as month,
+CASE
+  WHEN (date_first_activ < first_day)
+    AND (
+      date_end > first_day
+      OR date_end IS NULL
+    ) THEN 1
+  ELSE 0
+END as is_active,
+CASE 
+  WHEN date_end BETWEEN first_day AND last_day THEN 1
+  ELSE 0
+END as is_canceled
+FROM cross_join),
+status_aggregate AS
+(SELECT
+  month,
+  SUM(is_active) as active,
+  SUM(is_canceled) as canceled
+FROM status
+GROUP BY month)
+SELECT
+  month,
+  1.0 * canceled/active AS churn_rate
+FROM status_aggregate;

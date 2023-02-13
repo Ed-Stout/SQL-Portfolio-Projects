@@ -1,0 +1,74 @@
+--Data from: https://www.kaggle.com/datasets/davidcariboo/player-scores 
+
+--Query to look at the data for all columns
+SELECT *
+FROM appearances
+LIMIT 5;
+
+SELECT *
+FROM club_games
+LIMIT 5;
+
+SELECT *
+FROM clubs
+LIMIT 5;
+
+SELECT *
+FROM competitions
+LIMIT 5;
+
+SELECT *
+FROM player_valuations
+LIMIT 5;
+
+SELECT *
+FROM players
+LIMIT 5;
+
+--Query to stack the clubs table on top of the competitions table
+SELECT name
+FROM competitions
+UNION
+SELECT name
+FROM clubs;
+
+--Query to get the names of competitions and clubs in their respective tables using CROSS JOIN
+SELECT   competitions.name,
+         clubs.name
+FROM competitions
+CROSS JOIN clubs;
+
+--Data available at: https://www.kaggle.com/datasets/davidcariboo/player-scores
+
+--Query to find average player value for Premier League Teams in the 2022 season
+SELECT players.current_club_name AS 'Team Name',
+       ROUND(AVG(player_valuations.market_value_in_eur), 2) AS 'Average Player Value'
+FROM players
+JOIN player_valuations
+    ON players.player_id = player_valuations.player_id
+WHERE players.current_club_domestic_competition_id = 'GB1' AND
+      players.last_season = '2022'
+GROUP BY players.current_club_name
+ORDER BY 2 DESC;
+
+--Query to identify the minutes per goal of players with over 25 goals in the 2021 season
+SELECT player_name AS 'Player Name',
+        SUM(goals) AS 'Total Goals',
+        SUM(minutes_played)/SUM(goals) AS 'Minutes per goal'
+FROM appearances
+WHERE strftime ('%Y', date) = '2021'
+GROUP BY player_name
+HAVING SUM(goals) > 25
+ORDER BY 3;
+
+--Query to identify the win percentage of Premier League managers
+SELECT 
+  club_games.own_manager_name AS 'Manager', 
+  ROUND(AVG(club_games.is_win), 2) AS 'Win percentage'
+FROM clubs
+LEFT JOIN club_games
+    ON clubs.club_id = club_games.club_id
+WHERE clubs.domestic_competition_id = 'GB1'
+GROUP BY club_games.own_manager_name
+HAVING AVG(club_games.is_win) < 1 AND AVG(club_games.is_win) > 0 --To remove results from managers who only had a single game
+ORDER BY 2 DESC;
